@@ -1,6 +1,6 @@
 # Chat_ClientServer_Multi-OtO
 
-Per consultare il documento di progettazione della chat entrare nel link sottostante
+Per consultare il documento di progettazione della chat cliccare il link sottostante
 https://docs.google.com/document/d/1LxrkF2onQcolHsZYY4oWgrhd4sI7XOFJlp_XCbSxe5o/edit?usp=sharing
 
 Per consultare solamente il diagramma delle classi e i casi d'uso consultare

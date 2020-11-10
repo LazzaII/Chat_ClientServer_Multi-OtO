@@ -58,15 +58,15 @@ public class GestioneChat{
             usernameClient = inDalClient.readLine();
 
             if(utenti.isEmpty()) utenti.add(usernameClient);
-            else{
+            else {
                 for(int i = 0; i < utenti.size(); i++){
                     while(usernameClient.equals(utenti.get(i))){
                         outVersoClient.writeBytes("Nome utente non disponibile, inserirne uno nuovo" + '\n');
                         usernameClient = inDalClient.readLine();
                     }
                 }
-                utenti.add(usernameClient);
-            }
+            utenti.add(usernameClient);
+            }               
 
             System.out.println(usernameClient + " connesso");
             outVersoClient.writeBytes(usernameClient + " connesso" + '\n' + '\n');
@@ -78,51 +78,49 @@ public class GestioneChat{
                 sockets.get(i).outVersoClient.writeBytes("\n");
             }
 
-            try {
-                for(;;) {
-                    String mex = inDalClient.readLine();
-                    if(mex.equalsIgnoreCase("FINE")){
-                        System.out.println(usernameClient + ": utente disconnesso" + '\n');
-                        utenti.remove(usernameClient);
-                        sockets.remove(this);
-                        for(int i = 0; i < sockets.size(); i++){
-                            sockets.get(i).outVersoClient.writeBytes("Utenti connessi:" + '\n');
-                            for(int j = 0; j < utenti.size(); j++) {
-                                sockets.get(i).outVersoClient.writeBytes("Utente:" + utenti.get(j) + '\n');
-                            }
-                            sockets.get(i).outVersoClient.writeBytes("\n");
-                        }
-                        break;
+            for(;;) {
+                String mex = inDalClient.readLine();
+                if(mex.equalsIgnoreCase("FINE")) {
+                    System.out.println(usernameClient + ": utente disconnesso" + '\n');
+                    for (ServerThread s : sockets) {
+                                if(s != this) s.outVersoClient.writeBytes("Utente " + usernameClient + " disconnesso" + '\n');
                     }
-                    else if(sockets.size() > 1) {
-                        if(mex.contains("@Everyone")) {
-                            String[] mexSplit = mex.split("@");
-                            for (ServerThread s : sockets)
-                            {
+                    utenti.remove(usernameClient);
+                    sockets.remove(this);
+                    for(int i = 0; i < sockets.size(); i++) {
+                        sockets.get(i).outVersoClient.writeBytes("Utenti connessi:" + '\n');
+                        for(int j = 0; j < utenti.size(); j++) {
+                            sockets.get(i).outVersoClient.writeBytes("Utente:" + utenti.get(j) + '\n');
+                        }
+                        sockets.get(i).outVersoClient.writeBytes("\n");
+                    }
+                    break;
+                }
+                else {
+                    String[] mexSplit = mex.split("@");
+                    if(sockets.size() > 1) {
+                        if(mexSplit[1].equalsIgnoreCase("Everyone")) {         
+                            for (ServerThread s : sockets) {
                                 if(s != this) s.outVersoClient.writeBytes(usernameClient + ": " + mexSplit[0] + '\n');
                             }
                         }
                         else {
-                            String[] mexSplit = mex.split("@");
-                            for (ServerThread s : sockets)
-                            {
-                                if(s != this)
-                                {
-                                    if(s.usernameClient.equals(mexSplit[1])) s.outVersoClient.writeBytes(usernameClient + ": " + mexSplit[0] + '\n');
-                                    break;
+                            for (ServerThread s : sockets) {
+                                if(s != this) {
+                                    if(s.usernameClient.equals(mexSplit[1])) {
+                                        s.outVersoClient.writeBytes(usernameClient + ": " + mexSplit[0] + '\n');
+                                        break;
+                                    }
                                 }
                             }
                         }
                     }
                     else outVersoClient.writeBytes("Nessuno è connesso" + '\n');
                 }
-            }catch (Exception ex) {
-                System.out.println("Errore sconosciuto");
-                System.exit(1);
             }
-            outVersoClient.close();
-            inDalClient.close();
-            clientS.close();
+        outVersoClient.close();
+        inDalClient.close();
+        clientS.close();
         }
     }
 }

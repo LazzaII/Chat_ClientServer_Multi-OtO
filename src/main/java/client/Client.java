@@ -51,8 +51,8 @@ public class Client {
                 for(;;) {
                     String mex = input.readLine();
                     if(mex.equalsIgnoreCase("FINE")) {
-                        outToServer.writeBytes("Connessione in chiusura..." + '\n');
                         outToServer.writeBytes(mex + '\n');
+                        outToServer.writeBytes("Connessione in chiusura..." + '\n');                      
                         close();
                         break;
                     }

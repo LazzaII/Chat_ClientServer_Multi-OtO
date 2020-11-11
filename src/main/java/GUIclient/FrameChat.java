@@ -1,6 +1,5 @@
 package GUIclient;
 
-
 public class FrameChat extends javax.swing.JFrame {
 
     public FrameChat() {

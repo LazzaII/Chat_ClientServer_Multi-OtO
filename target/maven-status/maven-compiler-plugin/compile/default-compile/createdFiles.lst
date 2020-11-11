@@ -1,0 +1,4 @@
+server\GestioneChat$ServerThread.class
+server\GestioneChat.class
+client\Client$SendThread.class
+client\Client$ReadThread.class

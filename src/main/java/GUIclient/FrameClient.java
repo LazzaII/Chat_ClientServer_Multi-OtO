@@ -2,11 +2,15 @@ package GUIclient;
 
 import javax.swing.JFrame;
 import GUIserver.GestioneChat;
+import java.util.ArrayList;
 
 public class FrameClient extends javax.swing.JFrame {
-    GestioneChat gc = GestioneChat.getInstance();
-    FrameChat fc;
-    Client c = new Client();
+    Client c;
+    static ArrayList<String> utenti = new ArrayList<>();
+
+    public static ArrayList<String> getUtenti() {
+        return utenti;
+    }
     
     public FrameClient() {
         initComponents();
@@ -81,15 +85,23 @@ public class FrameClient extends javax.swing.JFrame {
     }//GEN-LAST:event_bttAnnullaMouseClicked
 
     private void bttConfMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bttConfMouseClicked
-        
-        if(gc.controlloUsername(fieldUser.getText())) {
-            c.connect(fieldUser.getText());
-            fc = new FrameChat(c);
-            fc.setVisible(true);
-            fc.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
-            this.setVisible(false);
+        boolean presente = false;
+        String username = fieldUser.getText();
+        if(utenti.isEmpty())utenti.add(username);
+        else{
+            for(String u : utenti){
+                if(username.equalsIgnoreCase(u)){
+                    labelErr.setText("Nome utente non disponibile");
+                presente = true;
+                break;
+                }
+            }
         }
-        else labelErr.setText("Nome utente non disponibile");
+        if(!presente){
+            utenti.add(username);
+            c = new Client(username);
+            labelErr.setText("");
+        }
     }//GEN-LAST:event_bttConfMouseClicked
 
     public static void main(String args[]) {

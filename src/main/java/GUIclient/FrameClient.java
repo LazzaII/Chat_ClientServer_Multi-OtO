@@ -4,8 +4,8 @@ import javax.swing.JFrame;
 import GUIserver.GestioneChat;
 
 public class FrameClient extends javax.swing.JFrame {
-    FrameChat fc = new FrameChat();
     GestioneChat gc = GestioneChat.getInstance();
+    FrameChat fc;
     Client c = new Client();
     
     public FrameClient() {
@@ -84,6 +84,7 @@ public class FrameClient extends javax.swing.JFrame {
         
         if(gc.controlloUsername(fieldUser.getText())) {
             c.connect(fieldUser.getText());
+            fc = new FrameChat(c);
             fc.setVisible(true);
             fc.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
             this.setVisible(false);

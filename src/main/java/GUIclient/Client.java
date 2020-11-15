@@ -12,10 +12,6 @@ public class Client {
     private SendThread sendThread;
     private ReadThread readThread;
     private String username;
-    /*public static void main(String args[]) throws UnknownHostException, IOException {
-        Client client = new Client();
-        client.connect();
-    }*/
 
     public void connect(String username) {
         this.username = username;
@@ -40,78 +36,32 @@ public class Client {
             ex.toString();
         }
     }
+    
+    public String getUsername() {
+        return username;
+    }
+    
+    public void sendMex(String mex) {
+        sendThread.send(mex);
+    }
 
-    public class SendThread extends Thread{
+    private class SendThread extends Thread{
         public SendThread() {
             start();
         }
-
-        @Override
-        public void run() {
-            try {
-                for(;;) {
-                    String mex = input.readLine();
-                    if(mex.equalsIgnoreCase("FINE")) {
-                        outToServer.writeBytes("Connessione in chiusura..." + '\n');
-                        outToServer.writeBytes(mex + '\n');
-                        close();
-                        break;
-                    }
-                    else {
-                        System.out.println("IO: " + mex);
-                        outToServer.writeBytes(mex + '\n');
-                    }
-                }
-            }
-            catch (Exception ex) {
-                ex.toString();
-                System.exit(1);
-            }
-        }
-
-        public void close() {
-            try {
-                inFromServer.close();
-                outToServer.close();
-                s.close();
-                readThread.close();
-                this.stop();
-            }
-            catch(Exception ex) {
-                ex.toString();
-            }
-            System.exit(0);
+        
+        public void send(String mex) {
+            try{
+               outToServer.writeBytes(mex); 
+            } catch (Exception ex) {
+                System.out.println("Impossibile inviare il messaggio");
+            }         
         }
     }
 
-    public class ReadThread extends Thread{
+    private class ReadThread extends Thread{
         public ReadThread() {
             start();
-        }
-
-        @Override
-        public void run() {
-            try {
-                for(;;) {
-                    String mex = inFromServer.readLine();           
-                    if(mex.equals("Inserisci username" + '\n')) outToServer.writeBytes(username);
-                    else if(mex != null) System.out.println(mex);
-                }
-            }
-            catch (Exception ex) {
-                ex.toString();
-                System.exit(1);
-            }
-        }
-
-        public void close() {
-            try {
-                this.stop();
-            }
-            catch(Exception ex) {
-                ex.toString();
-            }
-            System.exit(0);
         }
     }
 }

@@ -101,7 +101,7 @@ public class GestioneChat{
                     if(sockets.size() > 1) {
                         if(mexSplit[1].equalsIgnoreCase("Everyone")) {         
                             for (ServerThread s : sockets) {
-                                if(s != this) s.outVersoClient.writeBytes(usernameClient + ": " + mexSplit[0] + '\n');
+                                if(s != this) s.outVersoClient.writeBytes(usernameClient + ": " + mexSplit[0] + ("(everyone)") + '\n');
                             }
                         }
                         else {

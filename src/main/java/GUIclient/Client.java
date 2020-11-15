@@ -32,7 +32,7 @@ public class Client {
             // Apertura canali
             inFromServer = new BufferedReader (new InputStreamReader (s.getInputStream()));
             outToServer = new DataOutputStream(s.getOutputStream());
-
+     
             sendThread = new SendThread();
             readThread = new ReadThread();
         }
@@ -93,9 +93,9 @@ public class Client {
         public void run() {
             try {
                 for(;;) {
-                    String mex = inFromServer.readLine();
-                    if(mex != null) System.out.println(mex);
+                    String mex = inFromServer.readLine();           
                     if(mex.equals("Inserisci username" + '\n')) outToServer.writeBytes(username);
+                    else if(mex != null) System.out.println(mex);
                 }
             }
             catch (Exception ex) {

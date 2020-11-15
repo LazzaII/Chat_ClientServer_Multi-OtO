@@ -5,8 +5,8 @@ import GUIserver.GestioneChat;
 
 public class FrameClient extends javax.swing.JFrame {
     FrameChat fc = new FrameChat();
-    static GestioneChat gc = GestioneChat.getIstance();
-    Client c;
+    GestioneChat gc = GestioneChat.getInstance();
+    Client c = new Client();
     
     public FrameClient() {
         initComponents();

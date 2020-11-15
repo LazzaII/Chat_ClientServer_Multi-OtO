@@ -8,25 +8,26 @@ public class GestioneChat{
     private ArrayList<ServerThread> sockets = new ArrayList();
     private ArrayList <String> utenti = new ArrayList();
     private ServerSocket s;
-    private static GestioneChat istance = null;
+    private static GestioneChat instance = null;
 
     //Utilizziamo un singleton della gestione chat perche i client devono fare riferimento allo stesso server
-    public static GestioneChat getIstance() {
-    if(istance == null)
-      istance = new GestioneChat();
-    return istance;
+    public static GestioneChat getInstance() {
+    if(instance == null)
+      instance = new GestioneChat();
+    return instance;
     }
     
     public void start(){
+        getInstance();
         try{
-            //System.out.println("server in attesa");
-            istance.s = new ServerSocket(6789);
-
+            System.out.println("server in attesa");
+            instance.s = new ServerSocket(6789);
+            
             for(int i = 0; i < 10; i++) {
-                istance.sockets.add(new ServerThread(s.accept()));
-                istance.sockets.get(i).start();
+                instance.sockets.add(new ServerThread(instance.s.accept()));
+                instance.sockets.get(i).start();
             }
-            istance.s.close();
+            instance.s.close();
         }catch (Exception e){
             System.out.println(e.getMessage());
             System.out.println("Errore durante l'istanza del messaggio!");

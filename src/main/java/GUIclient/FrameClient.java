@@ -4,16 +4,20 @@ import javax.swing.JFrame;
 import GUIserver.GestioneChat;
 
 public class FrameClient extends javax.swing.JFrame {
-    private GestioneChat gc;
+    
     private static final String ERRORLABEL = "Username not available, insert a new one and try again"; 
+    private GestioneChat gc;
     
     public FrameClient() {
+        // super("User form") used to set the frame's title
         super("User form");
         initComponents();
+        // set the alignment of the label
         labelIntro.setHorizontalAlignment(javax.swing.JLabel.CENTER);
         labelErr.setHorizontalAlignment(javax.swing.JLabel.CENTER);
         labelErr.setVisible(false);
         labelErr.setText(ERRORLABEL);
+        // server initialization (SINGLETON)
         gc = GestioneChat.getInstance();
     }
 
@@ -87,20 +91,25 @@ public class FrameClient extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void bttAnnullaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bttAnnullaMouseClicked
+        // reset the input field
         fieldUser.setText("");
     }//GEN-LAST:event_bttAnnullaMouseClicked
 
     private void bttConfMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bttConfMouseClicked
+        // check the username
         String username = fieldUser.getText();
         if(gc.isFree(username)) {
+            // if the username is available it gets added to the array
             gc.addUsername(username);
             FrameChat fc = new FrameChat(username);
         }
-        else labelErr.setVisible(true);    
+        else labelErr.setVisible(true);     // The label is set to visible
+        // reset the input field
         fieldUser.setText("");
     }//GEN-LAST:event_bttConfMouseClicked
 
     private void fieldUserFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_fieldUserFocusGained
+        // the label is set to visible
         labelErr.setVisible(false);
     }//GEN-LAST:event_fieldUserFocusGained
 

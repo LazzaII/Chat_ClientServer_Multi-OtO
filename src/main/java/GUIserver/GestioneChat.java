@@ -1,16 +1,19 @@
 package GUIserver;
 
-import GUIclient.FrameChat;
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
 
 public class GestioneChat{
+    
+    private static int MAXCLIENT = 10;
+    private static final String ENDCOMMUNICATION = "#FINE#";
     private ArrayList <ServerThread> sockets = new ArrayList<>();
     private ArrayList <String> usernames = new ArrayList<>();
     private ServerSocket s;
     private static GestioneChat gc;
     
+    // we use a singleton to create only one server that is shared between the frame
     public static GestioneChat getInstance() {
         if(gc == null) {
             gc = new GestioneChat();
@@ -18,7 +21,7 @@ public class GestioneChat{
         return gc;
     }
     
-    //check if username is available
+    // check if username is available
     public boolean isFree(String username) {
         for(String s : usernames) {
             if(s.equals(username)) return false;
@@ -26,26 +29,31 @@ public class GestioneChat{
         return true;
     }
     
-    //add a username to the list
+    // add a username to the list [NON FUNZIONA NON SAPPIAMO IL MOTIVO]
     public void addUsername(String username) {
         usernames.add(username);
     }
     
+    // get
     public ArrayList<String> getUsernames() {
         return usernames;
     }
     
     public void start(){
         try{
+            // check if the server is already instanced
             getInstance();
             
+            // server is waiting client
             System.out.println("server in attesa");
             s = new ServerSocket(6789);
-
-            for(int i = 0; i < 10; i++) {
+            
+            // server accept the client connection (MAX = 10)
+            for(int i = 0; i < MAXCLIENT; i++) {
                 sockets.add(new ServerThread(s.accept()));
                 sockets.get(i).start();
             }
+            // closing the server
             s.close();
         }catch (Exception e){
             System.out.println(e.getMessage());
@@ -53,6 +61,7 @@ public class GestioneChat{
         }
     }
     
+    // MAIN
     public static void main(String[] args) {
         GestioneChat tcpServer = new GestioneChat();
         tcpServer.start();
@@ -78,12 +87,14 @@ public class GestioneChat{
             }
         } 
         
+        // this method is used to send the connected user list
         private void sendList() {
             try {
                 String list = "list#";
                 for(String s : usernames) {
                     list += ('\n' + "user: " + s);
                 }
+                list += '\n';
                 for(ServerThread s : sockets) {
                     s.out.writeBytes(list);              
                 }  
@@ -93,26 +104,31 @@ public class GestioneChat{
             }
         }
         
-        private void transmits() throws Exception{
+        private void transmits() throws Exception {
+            // open the stream and connect the data socket to client
             in = new BufferedReader (new InputStreamReader (clientS.getInputStream()));
             out = new DataOutputStream(clientS.getOutputStream());        
             
+            // get the username in input
             usernameClient = in.readLine();
             System.out.println("User: " + usernameClient + " connected");                      
             
+            // call the medthod sendList() to send the list of the connected user to all the conncted user
             sendList();
             
             for(;;) {
+                // get from client the message
                 String mex = in.readLine();
-                System.out.println(mex);
-                if(mex.equals("#FINE#")) {
+                // if the message contain #FINE# the connection to the server is closed
+                if(mex.equals(ENDCOMMUNICATION)) {
                     System.out.println("User: " + usernameClient + " disconnected");                   
                     usernames.remove(usernameClient);
                     sockets.remove(this);
+                    // then the server send the new list of the connected user to all the conncted user
                     sendList();
                     break;
                 }
-                else {
+                else {  // else the messsage is send to the interested user or to all the connected user
                     String[] mexSplit = mex.split("@");
                     if(sockets.size() > 1) {
                         if(mexSplit[1].equalsIgnoreCase("Everyone")) {         
@@ -130,10 +146,11 @@ public class GestioneChat{
                                 }
                             }
                         }
-                    }
-                    else out.writeBytes("Nessuno è connesso" + '\n');
+                    } // if there is only one conncted user (the sender) the server say "There is no one connected"
+                    else out.writeBytes("There is no one connected" + '\n');
                 }
             }
+        // close the stream and the data socket
         out.close();
         in.close();
         clientS.close();

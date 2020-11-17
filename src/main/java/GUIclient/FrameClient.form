@@ -24,36 +24,36 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
-              <EmptySpace pref="84" max="32767" attributes="0"/>
-              <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                  <Component id="labelIntro" max="32767" attributes="0"/>
-                  <Component id="fieldUser" max="32767" attributes="0"/>
-                  <Group type="102" attributes="0">
+              <EmptySpace pref="108" max="32767" attributes="0"/>
+              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
                       <Component id="bttAnnulla" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="54" max="-2" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
                       <Component id="bttConf" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <Component id="labelErr" max="32767" attributes="0"/>
+                  <Component id="labelErr" alignment="0" max="32767" attributes="0"/>
+                  <Component id="fieldUser" alignment="0" max="32767" attributes="0"/>
+                  <Component id="labelIntro" alignment="0" pref="255" max="32767" attributes="0"/>
               </Group>
-              <EmptySpace pref="104" max="32767" attributes="0"/>
+              <EmptySpace pref="108" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="1" attributes="0">
-              <EmptySpace min="-2" pref="77" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="76" max="-2" attributes="0"/>
               <Component id="labelIntro" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="40" max="-2" attributes="0"/>
               <Component id="fieldUser" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="60" max="32767" attributes="0"/>
+              <EmptySpace pref="49" max="32767" attributes="0"/>
               <Component id="labelErr" min="-2" pref="18" max="-2" attributes="0"/>
-              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="bttConf" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="bttAnnulla" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="39" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -61,7 +61,7 @@
   <SubComponents>
     <Component class="javax.swing.JButton" name="bttConf">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Conferma"/>
+        <Property name="text" type="java.lang.String" value="Submit"/>
       </Properties>
       <Events>
         <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="bttConfMouseClicked"/>
@@ -69,7 +69,7 @@
     </Component>
     <Component class="javax.swing.JButton" name="bttAnnulla">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Annulla"/>
+        <Property name="text" type="java.lang.String" value="Cancel"/>
       </Properties>
       <Events>
         <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="bttAnnullaMouseClicked"/>
@@ -77,12 +77,15 @@
     </Component>
     <Component class="javax.swing.JLabel" name="labelIntro">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Benvenuto! Inserisci il tuo username"/>
+        <Property name="text" type="java.lang.String" value="Hi! Insert your username to start chatting!"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="labelErr">
     </Component>
     <Component class="javax.swing.JTextField" name="fieldUser">
+      <Events>
+        <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="fieldUserFocusGained"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

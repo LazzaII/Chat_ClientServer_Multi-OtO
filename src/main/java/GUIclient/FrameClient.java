@@ -2,19 +2,19 @@ package GUIclient;
 
 import javax.swing.JFrame;
 import GUIserver.GestioneChat;
-import java.util.ArrayList;
 
 public class FrameClient extends javax.swing.JFrame {
-    Client c;
-    static ArrayList<String> utenti = new ArrayList<>();
-
-    public static ArrayList<String> getUtenti() {
-        return utenti;
-    }
+    private GestioneChat gc;
+    private static final String ERRORLABEL = "Username not available, insert a new one and try again"; 
     
     public FrameClient() {
+        super("User form");
         initComponents();
+        labelIntro.setHorizontalAlignment(javax.swing.JLabel.CENTER);
         labelErr.setHorizontalAlignment(javax.swing.JLabel.CENTER);
+        labelErr.setVisible(false);
+        labelErr.setText(ERRORLABEL);
+        gc = GestioneChat.getInstance();
     }
 
     @SuppressWarnings("unchecked")
@@ -29,52 +29,58 @@ public class FrameClient extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        bttConf.setText("Conferma");
+        bttConf.setText("Submit");
         bttConf.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 bttConfMouseClicked(evt);
             }
         });
 
-        bttAnnulla.setText("Annulla");
+        bttAnnulla.setText("Cancel");
         bttAnnulla.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 bttAnnullaMouseClicked(evt);
             }
         });
 
-        labelIntro.setText("Benvenuto! Inserisci il tuo username");
+        labelIntro.setText("Hi! Insert your username to start chatting!");
+
+        fieldUser.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                fieldUserFocusGained(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(84, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(labelIntro, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(fieldUser)
+                .addContainerGap(108, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(bttAnnulla)
-                        .addGap(54, 54, 54)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(bttConf))
-                    .addComponent(labelErr, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(104, Short.MAX_VALUE))
+                    .addComponent(labelErr, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(fieldUser)
+                    .addComponent(labelIntro, javax.swing.GroupLayout.DEFAULT_SIZE, 255, Short.MAX_VALUE))
+                .addContainerGap(108, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(77, 77, 77)
+                .addGap(76, 76, 76)
                 .addComponent(labelIntro)
                 .addGap(40, 40, 40)
                 .addComponent(fieldUser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 60, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE)
                 .addComponent(labelErr, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(bttConf)
                     .addComponent(bttAnnulla))
-                .addGap(15, 15, 15))
+                .addGap(39, 39, 39))
         );
 
         pack();
@@ -85,24 +91,18 @@ public class FrameClient extends javax.swing.JFrame {
     }//GEN-LAST:event_bttAnnullaMouseClicked
 
     private void bttConfMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bttConfMouseClicked
-        boolean presente = false;
         String username = fieldUser.getText();
-        if(utenti.isEmpty())utenti.add(username);
-        else{
-            for(String u : utenti){
-                if(username.equalsIgnoreCase(u)){
-                    labelErr.setText("Nome utente non disponibile");
-                presente = true;
-                break;
-                }
-            }
+        if(gc.isFree(username)) {
+            gc.addUsername(username);
+            FrameChat fc = new FrameChat(username);
         }
-        if(!presente){
-            utenti.add(username);
-            c = new Client(username);
-            labelErr.setText("");
-        }
+        else labelErr.setVisible(true);    
+        fieldUser.setText("");
     }//GEN-LAST:event_bttConfMouseClicked
+
+    private void fieldUserFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_fieldUserFocusGained
+        labelErr.setVisible(false);
+    }//GEN-LAST:event_fieldUserFocusGained
 
     public static void main(String args[]) {
         FrameClient frm = new FrameClient();

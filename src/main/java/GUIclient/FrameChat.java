@@ -1,12 +1,39 @@
 package GUIclient;
 
-public class FrameChat extends javax.swing.JFrame {
-    FrameClient fc;
-    
+import GUIserver.GestioneChat;
+import java.io.*;
+import java.net.*;
 
-    public FrameChat(String username) {
-        initComponents();
-        this.setName(username);
+public class FrameChat extends javax.swing.JFrame {
+    private static final int SERVERPORT = 6789;
+    private static final String HEADER = "#";
+    private Socket s;
+    private BufferedReader in;
+    private DataOutputStream out;
+    private ReadThread read;
+    private GestioneChat gc;
+    
+    public FrameChat(String username) {      
+        super(username);       
+        initComponents();    
+        this.setVisible(true);
+        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        
+        gc = GestioneChat.getInstance();
+        
+        try {
+            s = new Socket(InetAddress.getByName("localhost"), SERVERPORT);
+            in = new BufferedReader (new InputStreamReader (s.getInputStream()));
+            out = new DataOutputStream(s.getOutputStream()); 
+            read = new ReadThread();
+            
+            //send username to ServerThread
+            out.writeBytes(username + '\n');
+        }
+        catch(Exception ex) {
+            ex.toString();
+            System.exit(1);
+        }     
     }
 
     /**
@@ -44,6 +71,7 @@ public class FrameChat extends javax.swing.JFrame {
             }
         });
 
+        areaRecive.setEditable(false);
         areaRecive.setColumns(20);
         areaRecive.setRows(5);
         jScrollPane1.setViewportView(areaRecive);
@@ -52,6 +80,7 @@ public class FrameChat extends javax.swing.JFrame {
 
         labelSend.setText("Inviati");
 
+        areaSend.setEditable(false);
         areaSend.setColumns(20);
         areaSend.setRows(5);
         jScrollPane2.setViewportView(areaSend);
@@ -70,6 +99,7 @@ public class FrameChat extends javax.swing.JFrame {
             }
         });
 
+        userList.setEditable(false);
         userList.setColumns(20);
         userList.setRows(5);
         jScrollPane3.setViewportView(userList);
@@ -145,18 +175,10 @@ public class FrameChat extends javax.swing.JFrame {
     }//GEN-LAST:event_bttAnnullaMouseClicked
 
     private void bttSendMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bttSendMouseClicked
-       
+        sendMessage(fieldText.getText());
+        fieldText.setText("");
     }//GEN-LAST:event_bttSendMouseClicked
-    
-    public void updateUserList() {
-        String list = "";
-        for(String s : fc.getUtenti()) {
-            list += s + '\n';
-        }
-        System.out.println(list);
-        userList.setText(list);
-    }
-
+ 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextArea areaRecive;
     private javax.swing.JTextArea areaSend;
@@ -173,4 +195,39 @@ public class FrameChat extends javax.swing.JFrame {
     private javax.swing.JLabel labelSend;
     private javax.swing.JTextArea userList;
     // End of variables declaration//GEN-END:variables
+
+    private void sendMessage(String mex) {
+        try {
+            areaSend.setText(areaSend.getText() + mex + '\n');
+            out.writeBytes(mex + '\n');
+        }
+        catch (Exception ex) {
+            ex.toString();
+        }
+    }
+    
+    public class ReadThread extends Thread {
+        String s = "";
+    
+        public ReadThread() {
+            start();
+        }
+
+        @Override
+        public void run() {
+            try {
+                for(;;) {
+                   s = in.readLine();
+                   if(s.contains("list" + HEADER)) {
+                       String[] subString = s.split(HEADER);
+                       userList.setText(subString[1]);
+                   }  
+                   else areaRecive.setText(areaRecive.getText() + '\n' + s);
+                }
+            }
+            catch (Exception ex) {
+                ex.toString();
+            }
+        }
+    }
 }

@@ -37,7 +37,6 @@ public class GestioneChat{
         private DataOutputStream outVersoClient;
         private String usernameClient;
 
-
         public ServerThread (Socket socket){
             this.clientS = socket;
         }
@@ -65,7 +64,7 @@ public class GestioneChat{
                         usernameClient = inDalClient.readLine();
                     }
                 }
-            utenti.add(usernameClient);
+                utenti.add(usernameClient);
             }               
 
             System.out.println(usernameClient + " connesso");
